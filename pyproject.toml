@@ -10,5 +10,6 @@ readme = "README.md"
 requires-python = ">=3.7"
 dependencies = [
     "numpy",
-    "pytest"
+    "pytest",
+    "pytest-cov"
 ]
