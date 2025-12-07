@@ -37,4 +37,8 @@ jobs:
           pip install -e .               	# This puts your package on sys.path
     - name: Test with pytest
       run: |
-        pytest
+        pytest --cov --cov-branch --cov-report=xml
+    - name: Upload results to Codecov
+      uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
