@@ -10,6 +10,14 @@ readme = "README.md"
 requires-python = ">=3.7"
 dependencies = [
     "numpy",
+    "scipy",
     "pytest",
     "pytest-cov"
 ]
+
+[tool.coverage.run]
+omit = [
+    # omit anything in a .local directory anywhere
+    "tests/*",
+    "Sustainable_Code_Demo/__init__.py",
+    ]
