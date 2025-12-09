@@ -42,17 +42,17 @@ def two_spin_op(L, idx1, idx2, Op1, Op2):
     else:
         return kron(lhs, kron(Op2, kron(mhs, kron(Op1, rhs))))
 
-def tfim_hamiltonian(L, J, hx_arr, periodic = False):
-    # sparse Transverse-Field Ising Model Hamiltonian. Takes arrays for coupling Ji and fields hxi and hzi
-    L = int(L)
-    if hx_arr.size != L:
-        raise ValueError("Length of hx_arr must be equal to L.")
-    ham = csr_matrix((2 ** L, 2 ** L), dtype=complex)
-    for i in range(L-1):
-        ham += J * two_spin_op(L, i, i + 1, sz, sz)
-    if periodic == True:
-        # add coupling between first and last spin
-        ham += J * two_spin_op(L, 0, L - 1, sz, sz)
-    for i in range(L):
-        ham += hx_arr[i] * one_spin_op(L, i, sx)
-    return ham
+# def tfim_hamiltonian(L, J, hx_arr, periodic = False):
+#     # sparse Transverse-Field Ising Model Hamiltonian. Takes arrays for coupling Ji and fields hxi and hzi
+#     L = int(L)
+#     if hx_arr.size != L:
+#         raise ValueError("Length of hx_arr must be equal to L.")
+#     ham = csr_matrix((2 ** L, 2 ** L), dtype=complex)
+#     for i in range(L-1):
+#         ham += J * two_spin_op(L, i, i + 1, sz, sz)
+#     if periodic == True:
+#         # add coupling between first and last spin
+#         ham += J * two_spin_op(L, 0, L - 1, sz, sz)
+#     for i in range(L):
+#         ham += hx_arr[i] * one_spin_op(L, i, sx)
+#     return ham

@@ -121,35 +121,35 @@ class Test_Two_Spin_Operator:
         with pytest.raises(ValueError):
             hams.two_spin_op(self.L, idx1, idx2, self.spin_op1, self.spin_op2)
             
-class Test_TFIM_Hamiltonian:
+# class Test_TFIM_Hamiltonian:
 
-    def test_zeros(self):
-        L = 4
-        J = 0
-        hx_arr = np.zeros(L)
-        ham = hams.tfim_hamiltonian(L, J, hx_arr, periodic=False)
-        expected = csr_matrix((2 ** L, 2 ** L), dtype=complex)
-        assert (ham != expected).nnz == 0
+#     def test_zeros(self):
+#         L = 4
+#         J = 0
+#         hx_arr = np.zeros(L)
+#         ham = hams.tfim_hamiltonian(L, J, hx_arr, periodic=False)
+#         expected = csr_matrix((2 ** L, 2 ** L), dtype=complex)
+#         assert (ham != expected).nnz == 0
 
-    def test_manual_field_hamiltonian(self):
-        L = 5
-        J = 0.0
-        hx_arr = np.array([0.5, 0, 0, 1, 0])
-        ham = hams.tfim_hamiltonian(L, J, hx_arr, periodic=False)
-        expected = csr_matrix((2 ** L, 2 ** L), dtype=complex)
-        expected += hx_arr[0] * hams.one_spin_op(L, 0, hams.sx)
-        expected += hx_arr[3] * hams.one_spin_op(L, 3, hams.sx)
-        assert (ham != expected).nnz == 0
+#     def test_manual_field_hamiltonian(self):
+#         L = 5
+#         J = 0.0
+#         hx_arr = np.array([0.5, 0, 0, 1, 0])
+#         ham = hams.tfim_hamiltonian(L, J, hx_arr, periodic=False)
+#         expected = csr_matrix((2 ** L, 2 ** L), dtype=complex)
+#         expected += hx_arr[0] * hams.one_spin_op(L, 0, hams.sx)
+#         expected += hx_arr[3] * hams.one_spin_op(L, 3, hams.sx)
+#         assert (ham != expected).nnz == 0
 
-    def test_coupling_terms_hamiltonian(self):
-        L = 3
-        J = 2.0
-        hx_arr = np.zeros(L)
-        ham = hams.tfim_hamiltonian(L, J, hx_arr, periodic=False)
-        expected = csr_matrix((2 ** L, 2 ** L), dtype=complex)
-        expected += J * hams.two_spin_op(L, 0, 1, hams.sz, hams.sz)
-        expected += J * hams.two_spin_op(L, 1, 2, hams.sz, hams.sz)
-        assert (ham != expected).nnz == 0
+#     def test_coupling_terms_hamiltonian(self):
+#         L = 3
+#         J = 2.0
+#         hx_arr = np.zeros(L)
+#         ham = hams.tfim_hamiltonian(L, J, hx_arr, periodic=False)
+#         expected = csr_matrix((2 ** L, 2 ** L), dtype=complex)
+#         expected += J * hams.two_spin_op(L, 0, 1, hams.sz, hams.sz)
+#         expected += J * hams.two_spin_op(L, 1, 2, hams.sz, hams.sz)
+#         assert (ham != expected).nnz == 0
 
 
     # def test_periodic_boundary_conditions(self):
