@@ -1,18 +1,19 @@
 from scipy.sparse import coo_array, csr_matrix, identity, kron
 
-sx = 0.5 * coo_array([[0, 1], [1, 0]]).tocsr()
+sx = 0.5 * coo_array([[0, 1], [1, 0]]).tocsr() # Spin_X operator
 
-sy = 0.5 * coo_array([[0, -1j], [1j, 0]]).tocsr()
+sy = 0.5 * coo_array([[0, -1j], [1j, 0]]).tocsr() # Spin Y operator
 
-sz = 0.5 * coo_array([[1, 0], [0, -1]]).tocsr()
+sz = 0.5 * coo_array([[1, 0], [0, -1]]).tocsr() # Spin Z operator
 
-I = identity(2)
+I = identity(2) # Identity matrix of dimension 2¹
 
 def trace(matrix):
     """Calculates the trace of a matrix."""
     return matrix.diagonal().sum()
 
 def one_spin_op(L, idx, Op):
+    """ Compute the single-spin operator Op at the position idx in the tensor-product basis space of L spins."""
     #single spin operator for chain of length L at site idx
     idx = int(idx)
     if idx < 0 or idx >= L:
@@ -24,6 +25,7 @@ def one_spin_op(L, idx, Op):
     return kron(lhs, kron(Op, rhs))
 
 def two_spin_op(L, idx1, idx2, Op1, Op2):
+    """ Compute the two-spin product operator of Op1 and Op2 at positions idx1 and idx2 in the tensor-product basis space of L spins."""
     #two spin operator for chain of length L at sites idx1, idx2
     idx1 = int(idx1)
     idx2 = int(idx2)
@@ -37,7 +39,7 @@ def two_spin_op(L, idx1, idx2, Op1, Op2):
     lhs = identity(2 ** lsize)
     mhs = identity(2 ** msize)
     rhs = identity(2 ** rsize)
-    if idx1 < idx2:
+    if idx1 < idx2: # check ordering of operators
         return kron(lhs, kron(Op1, kron(mhs, kron(Op2, rhs))))
     else:
         return kron(lhs, kron(Op2, kron(mhs, kron(Op1, rhs))))
