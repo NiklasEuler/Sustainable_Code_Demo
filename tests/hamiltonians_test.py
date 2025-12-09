@@ -1,5 +1,6 @@
 import pytest
-from scipy.sparse import kron
+import numpy as np
+from scipy.sparse import kron, csr_matrix
 import Sustainable_Code_Demo.hamiltonians as hams
 
 class Test_Spin_Half_Operators:
@@ -58,6 +59,16 @@ class Test_One_Spin_Operator:
         expected = kron(hams.I, kron(hams.I, self.spin_op))
         assert (op != expected).nnz == 0
 
+    def test_one_spin_op_invalid_index_negative(self):
+        idx = -1
+        with pytest.raises(ValueError):
+            hams.one_spin_op(self.L, idx, self.spin_op)
+    
+    def test_one_spin_op_invalid_index_too_large(self):
+        idx = self.L
+        with pytest.raises(ValueError):
+            hams.one_spin_op(self.L, idx, self.spin_op)
+
 class Test_Two_Spin_Operator:
     
     L = 5
@@ -97,4 +108,67 @@ class Test_Two_Spin_Operator:
         idx2 = 2
         with pytest.raises(ValueError):
             hams.two_spin_op(self.L, idx1, idx2, self.spin_op1, self.spin_op2)
+
+    def test_two_spin_op_invalid_index_negative(self):
+        idx1 = -1
+        idx2 = 2
+        with pytest.raises(ValueError):
+            hams.two_spin_op(self.L, idx1, idx2, self.spin_op1, self.spin_op2)
+
+    def test_two_spin_op_invalid_index_too_large(self):
+        idx1 = 1
+        idx2 = self.L
+        with pytest.raises(ValueError):
+            hams.two_spin_op(self.L, idx1, idx2, self.spin_op1, self.spin_op2)
             
+class Test_TFIM_Hamiltonian:
+
+    def test_zeros(self):
+        L = 4
+        J = 0
+        hx_arr = np.zeros(L)
+        ham = hams.tfim_hamiltonian(L, J, hx_arr, periodic=False)
+        expected = csr_matrix((2 ** L, 2 ** L), dtype=complex)
+        assert (ham != expected).nnz == 0
+
+    def test_manual_field_hamiltonian(self):
+        L = 5
+        J = 0.0
+        hx_arr = np.array([0.5, 0, 0, 1, 0])
+        ham = hams.tfim_hamiltonian(L, J, hx_arr, periodic=False)
+        expected = csr_matrix((2 ** L, 2 ** L), dtype=complex)
+        expected += hx_arr[0] * hams.one_spin_op(L, 0, hams.sx)
+        expected += hx_arr[3] * hams.one_spin_op(L, 3, hams.sx)
+        assert (ham != expected).nnz == 0
+
+    def test_coupling_terms_hamiltonian(self):
+        L = 3
+        J = 2.0
+        hx_arr = np.zeros(L)
+        ham = hams.tfim_hamiltonian(L, J, hx_arr, periodic=False)
+        expected = csr_matrix((2 ** L, 2 ** L), dtype=complex)
+        expected += J * hams.two_spin_op(L, 0, 1, hams.sz, hams.sz)
+        expected += J * hams.two_spin_op(L, 1, 2, hams.sz, hams.sz)
+        assert (ham != expected).nnz == 0
+
+
+    # def test_periodic_boundary_conditions(self):
+    #     L = 4
+    #     J = 3.0
+    #     hx_arr = np.ones(L)
+    #     ham = hams.tfim_hamiltonian(L, J, hx_arr, periodic=True)
+    #     expected = csr_matrix((2 ** L, 2 ** L), dtype=complex)
+    #     expected += J * hams.two_spin_op(L, 0, 1, hams.sz, hams.sz)
+    #     expected += J * hams.two_spin_op(L, 1, 2, hams.sz, hams.sz)
+    #     expected += J * hams.two_spin_op(L, 2, 3, hams.sz, hams.sz)
+    #     expected += J * hams.two_spin_op(L, 0, 3, hams.sz, hams.sz)
+    #     for i in range(L):
+    #         expected += hx_arr[i] * hams.one_spin_op(L, i, hams.sx)
+    #     assert (ham != expected).nnz == 0
+
+    # def test_invalid_hx_arr_length(self):
+    #     L = 3
+    #     J = 1.0
+    #     hx_arr = np.array([0.5, 0.5])  # Incorrect length
+    #     with pytest.raises(ValueError):
+    #         hams.tfim_hamiltonian(L, J, hx_arr, periodic=False)
