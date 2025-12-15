@@ -41,7 +41,7 @@ jobs:
         pip install -e .               	# This puts your package on sys.path
     - name: Test with pytest
       run: |
-        pytest --cov --junitxml=junit.xml
+        pytest --cov --junitxml=junit.xml -o junit_family=legacy
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
       with:
