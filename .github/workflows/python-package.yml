@@ -38,11 +38,16 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Install project (editable) 	# CRITICAL: makes "import myproject" work
       run: |
-          pip install -e .               	# This puts your package on sys.path
+        pip install -e .               	# This puts your package on sys.path
     - name: Test with pytest
       run: |
-        pytest --cov --cov-branch --cov-report=xml
-    - name: Upload results to Codecov
+        pytest --cov --junitxml=junit.xml
+    - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v5
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+    - name: Upload test results to Codecov
+      if: ${{ !cancelled() }}
+      uses: codecov/test-results-action@v1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
