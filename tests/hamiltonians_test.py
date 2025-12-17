@@ -107,7 +107,7 @@ class Test_Two_Spin_Operator:
 
     def test_two_spin_op_sites13(self):
         idx1 = 1
-        idx2 = 3
+        idx2 = 5
         op = hams.two_spin_op(self.L, idx1, idx2, self.spin_op1, self.spin_op2)
         expected = kron(hams.I, kron(self.spin_op1, kron(hams.I, kron(self.spin_op2, hams.I))))
         assert np.allclose(op.todense(), expected.todense())
